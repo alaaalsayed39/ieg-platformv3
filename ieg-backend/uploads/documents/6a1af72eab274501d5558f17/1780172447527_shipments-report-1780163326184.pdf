@@ -1,0 +1,47 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1022 >>
+stream
+BT /F1 10 Tf 50 780 Td (IEG Platform ? Shipment Report) Tj ET
+BT /F1 10 Tf 50 766 Td (Generated: 2026-05-30 17:48:46 UTC) Tj ET
+BT /F1 10 Tf 50 752 Td (Total shipments: 2) Tj ET
+BT /F1 10 Tf 50 738 Td () Tj ET
+BT /F1 10 Tf 50 724 Td (1. CON-10001 | OR-2025-10001) Tj ET
+BT /F1 10 Tf 50 710 Td (   Product: Egyptian Long-Staple Cotton Grade A | Status: delivered) Tj ET
+BT /F1 10 Tf 50 696 Td (   Route: Port Said, Egypt -> Port of New York, USA) Tj ET
+BT /F1 10 Tf 50 682 Td (   Carrier: Hapag-Lloyd | ETA: 2026-05-25) Tj ET
+BT /F1 10 Tf 50 668 Td (   Value USD: 28000) Tj ET
+BT /F1 10 Tf 50 654 Td () Tj ET
+BT /F1 10 Tf 50 640 Td (2. CON-10003 | OR-2025-10007) Tj ET
+BT /F1 10 Tf 50 626 Td (   Product: Egyptian Cotton Towels - Hotel Grade | Status: in_transit) Tj ET
+BT /F1 10 Tf 50 612 Td (   Route: Alexandria Port, Egypt -> Port of Los Angeles, USA) Tj ET
+BT /F1 10 Tf 50 598 Td (   Carrier: MSC Mediterranean | ETA: 2026-06-13) Tj ET
+BT /F1 10 Tf 50 584 Td (   Value USD: 12000) Tj ET
+BT /F1 10 Tf 50 570 Td () Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001315 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1385
+%%EOF

@@ -1,0 +1,45 @@
+{
+  "name": "ieg-backend",
+  "version": "1.0.0",
+  "description": "International Export Gateway — Backend API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seed/index.js",
+    "seed:clear": "node src/seed/index.js --clear",
+    "verify:db": "node scripts/verify-db.js",
+    "test:e2e": "node scripts/e2e-smoke.js",
+    "test:e2e:ci": "node scripts/e2e-with-server.js",
+    "verify:product": "node scripts/verify-product-flow.js",
+    "verify:shipment": "node scripts/verify-shipment-flow.js",
+    "verify:business": "node scripts/verify-business-workflow.js",
+    "verify:documents": "node scripts/verify-documents-flow.js",
+    "verify:document-approval": "node scripts/verify-document-approval.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.10.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7",
+    "socket.io": "^4.6.2",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
