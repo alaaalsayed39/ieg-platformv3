@@ -1,6 +1,11 @@
 require('express-async-errors');
 require('dotenv').config();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://ieg-frontend.vercel.app'
+];
+
 const express  = require('express');
 const path     = require('path');
 const cors     = require('cors');
@@ -36,12 +41,23 @@ const messageRoutes      = require('./modules/messages/message.routes');
 
 const app = express();
 
+// Trust the first proxy (e.g. Railway, Heroku, Render, Cloudflare, etc.)
+// Required for express-rate-limit to work correctly behind load balancers/reverse proxies
+app.set('trust proxy', 1);
+
 // ── Security Middleware ────────────────────────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  // origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
