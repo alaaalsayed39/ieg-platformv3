@@ -2,7 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
 export const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+  // import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+  import.meta.env.VITE_API_URL || "https://ieg-platformv3-production.up.railway.app/api/v1";
+
 
 export const API_ORIGIN = API_BASE.replace(/\/api\/v1\/?$/, "");
 
