@@ -1,51 +1,73 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
 const tieredPricingItem = Joi.object({
-  minQty:       Joi.number().min(1).required(),
-  maxQty:       Joi.number().min(1).allow(null),
-  pricePerUnit: Joi.number().min(0).required(),
+  minQty: Joi.number().min(1).required(),
+  maxQty: Joi.number().min(1).allow(null),
+  pricePerUnit: Joi.number().greater(0).required(),
 });
 
 const createProductSchema = Joi.object({
-  nameEn:      Joi.string().min(2).max(200).required(),
-  nameAr:      Joi.string().max(200).allow('', null),
-  category:    Joi.string().valid(
-    'Agriculture','Textiles','Chemicals','Marble','Handicrafts',
-    'Electronics','Food & Beverage','Machinery','Furniture','Other'
-  ).required(),
-  description: Joi.string().max(5000).allow('', null),
+  nameEn: Joi.string().min(2).max(200).required(),
+  nameAr: Joi.string().max(200).allow("", null),
+  category: Joi.string()
+    .valid(
+      "Agriculture",
+      "Textiles",
+      "Chemicals",
+      "Marble",
+      "Handicrafts",
+      "Electronics",
+      "Food & Beverage",
+      "Machinery",
+      "Furniture",
+      "Other",
+    )
+    .required(),
+  description: Joi.string().max(5000).allow("", null),
   pricing: Joi.object({
-    pricePerUnit:  Joi.number().min(0).required(),
-    currency:      Joi.string().default('USD'),
-    unit:          Joi.string().required(),
+    pricePerUnit: Joi.number().min(0).required(),
+    currency: Joi.string().valid("USD", "EUR", "EGP").required(),
+    unit: Joi.string().required(),
     tieredPricing: Joi.array().items(tieredPricingItem).default([]),
   }).required(),
-  moq:       Joi.number().min(1).default(1),
+  moq: Joi.number().min(1).default(1),
   inventory: Joi.object({
     quantity: Joi.number().min(0).default(0),
-    unit:     Joi.string().allow('', null),
+    unit: Joi.string().allow("", null),
   }).default({}),
   shipping: Joi.object({
-    length: Joi.number().allow(null).empty(''),
-    width:  Joi.number().allow(null).empty(''),
-    height: Joi.number().allow(null).empty(''),
-    weight: Joi.number().allow(null).empty(''),
+    length: Joi.number().min(0).allow(null).empty(""),
+    width: Joi.number().min(0).allow(null).empty(""),
+    height: Joi.number().min(0).allow(null).empty(""),
+    weight: Joi.number().greater(0).allow(null).empty(""),
   }).default({}),
-  certifications: Joi.array().items(Joi.object({
-    type: Joi.string().valid('ISO','Organic','Halal','OEKO-TEX','Custom'),
-    name: Joi.string().allow('', null),
-  })).default([]),
+  certifications: Joi.array()
+    .items(
+      Joi.object({
+        type: Joi.string().valid(
+          "ISO",
+          "Organic",
+          "Halal",
+          "OEKO-TEX",
+          "Custom",
+        ),
+        name: Joi.string().allow("", null),
+      }),
+    )
+    .default([]),
   specifications: Joi.object().pattern(Joi.string(), Joi.string()).default({}),
-  tags:           Joi.alternatives().try(
-    Joi.array().items(Joi.string()),
-    Joi.string().allow('', null)
-  ).default([]),
-  countryOfOrigin:Joi.string().length(2).uppercase().default('EG'),
-  status:         Joi.string().valid('published', 'draft', 'inactive', 'pending_review').default('draft'),
+  tags: Joi.alternatives()
+    .try(Joi.array().items(Joi.string()), Joi.string().allow("", null))
+    .default([]),
+  countryOfOrigin: Joi.string().length(2).uppercase().default("EG"),
+  status: Joi.string()
+    .valid("published", "draft", "inactive", "pending_review")
+    .default("draft"),
 });
 
 const updateProductSchema = createProductSchema.fork(
-  ['nameEn', 'category', 'pricing'], (s) => s.optional()
+  ["nameEn", "category", "pricing"],
+  (s) => s.optional(),
 );
 
 module.exports = { createProductSchema, updateProductSchema };
