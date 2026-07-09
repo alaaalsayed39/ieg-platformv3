@@ -5,10 +5,6 @@ const ApiError = require("../../utils/ApiError");
 const { getPagination } = require("../../utils/pagination");
 const { saveFile, deleteFile } = require("../../utils/fileStorage");
 
-/**
- * Upload files to Cloudinary (or local) and return image objects ready for the DB.
- * First file becomes isPrimary = true.
- */
 const _uploadImages = async (files = [], userId) => {
   const results = [];
   for (let i = 0; i < files.length; i++) {
@@ -34,35 +30,45 @@ const _deleteImages = async (images = []) => {
 // ─── Create Product ────────────────────────────────────────────────────────────
 const create = async (exporterId, data, isVerified, files = []) => {
     
-  console.log("Incoming create data:", data);
-
-  const existingProduct = await Product.find({
-    nameEn: { $exists: true }
-  }).select("nameEn");
-
-  console.log(
-    "Existing names:",
+    console.log(
+    "All product names:",
     existingProduct.map(p => p.nameEn)
   );
 
-  const duplicate = existingProduct.find(
-    p =>
-      p.nameEn?.trim().toLowerCase() ===
-      data.nameEn?.trim().toLowerCase()
-  );
+const duplicate = await Product.findOne({
+  nameEn: {
+    $regex: `^${data.nameEn.trim()}$`,
+    $options: "i",
+  },
+});
 
-  console.log("Duplicate:", duplicate);
-
-  if (duplicate) {
-    throw ApiError.badRequest(
-      "Product name already exists"
-    );
-  }
+if (duplicate) {
+  throw ApiError.badRequest("Product name already exists");
+}
 
 
   const images = await _uploadImages(files, exporterId);
 
   let status = data.status || "draft";
+  if (status === "published") {
+  if (
+    !data.nameEn ||
+    !data.nameAr ||
+    !data.category ||
+    !data.description ||
+    !data.pricing?.pricePerUnit ||
+    !data.pricing?.currency ||
+    !data.pricing?.unit ||
+    !data.moq ||
+    !data.inventory?.quantity ||
+    !data.shipping?.weight ||
+    (!files.length && (!data.images || data.images.length === 0))
+  ) {
+    throw ApiError.badRequest(
+      "Please complete all required fields before publishing."
+    );
+  }
+}
   if (status === "published" && !isVerified) {
     status = "pending_review";
   }

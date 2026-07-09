@@ -15,9 +15,10 @@ const CERTS = PRODUCT_CERTIFICATIONS;
 const UNITS = ["kg", "ton", "piece", "liter", "m²", "box", "pallet"];
 
 export default function AddProduct() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
 
@@ -129,6 +130,25 @@ export default function AddProduct() {
     }
 
     const currentStatus = shouldPublish ? "published" : "draft";
+    if (shouldPublish) {
+      if (
+        !form.nameEn.trim() ||
+        !form.nameAr.trim() ||
+        !form.category ||
+        !form.description.trim() ||
+        !form.pricing.pricePerUnit ||
+        !form.pricing.currency ||
+        !form.pricing.unit ||
+        !form.moq ||
+        !form.inventory.quantity ||
+        !form.shipping.weight ||
+        images.length === 0
+      ) {
+        toast.error("Please complete all required fields before publishing.");
+        setLoading(false);
+        return;
+      }
+    }
 
     try {
       let imageUrls = [];
@@ -222,8 +242,13 @@ export default function AddProduct() {
                   onChange={(e) => {
                     const value = e.target.value;
 
-                    if (/^\d+$/.test(value)) {
-                      toast.error("Product name cannot contain numbers only");
+                    if (
+                      value &&
+                      !/^(?=.*[A-Za-z])[A-Za-z0-9\s-]+$/.test(value)
+                    ) {
+                      toast.error(
+                        "English Product Name must contain English letters only",
+                      );
                       return;
                     }
 
@@ -238,7 +263,18 @@ export default function AddProduct() {
                   placeholder="الاسم بالعربية"
                   dir="rtl"
                   value={form.nameAr}
-                  onChange={(e) => set("nameAr", e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    if (value && !/^[\u0600-\u06FF\s]+$/.test(value)) {
+                      toast.error(
+                        "Arabic Product Name must contain Arabic letters only",
+                      );
+                      return;
+                    }
+
+                    set("nameAr", value);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">

@@ -36,6 +36,8 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "socket.io": "^4.6.2",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
   },

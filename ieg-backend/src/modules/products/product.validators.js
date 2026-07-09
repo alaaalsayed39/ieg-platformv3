@@ -8,7 +8,14 @@ const tieredPricingItem = Joi.object({
 
 const createProductSchema = Joi.object({
   nameEn: Joi.string().min(2).max(200).required(),
-  nameAr: Joi.string().max(200).allow("", null),
+  nameAr: Joi.string()
+    .pattern(/^[\u0600-\u06FF\s]+$/)
+    .max(200)
+    .allow("", null)
+    .messages({
+      "string.pattern.base":
+        "Arabic Product Name must contain Arabic letters only.",
+    }),
   category: Joi.string()
     .valid(
       "Agriculture",

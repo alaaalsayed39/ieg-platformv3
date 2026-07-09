@@ -15,8 +15,9 @@ const cookieParser = require('cookie-parser');
 const compression  = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 
-// Initialise Cloudinary immediately at startup so credentials are validated
-// before any upload request arrives. Must come after dotenv.config().
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./config/swagger");
+
 require('./config/cloudinary');
 
 const { globalLimiter } = require('./middleware/rateLimiter');
@@ -69,7 +70,11 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
-
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 // ── Logging ────────────────────────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined', {
@@ -113,6 +118,11 @@ app.get('/health', async (req, res) => {
     },
   });
 });
+
+// Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 
 // ── API Routes ─────────────────────────────────────────────────────────────────
 const API = '/api/v1';
