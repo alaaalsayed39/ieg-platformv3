@@ -23,7 +23,27 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
     phone: { type: String, trim: true },
+    /**
+     * @deprecated Company identity now lives in the Company collection
+     * (modules/companies/company.model.js). This field is kept, unmodified,
+     * for backward-read compatibility with any code not yet migrated to
+     * `companyId`. It is populated going forward by M1.2 (migration backfill)
+     * and, from M2 onward, registration will stop writing new values here.
+     * Do not remove until all reads of `user.companyName` are repointed
+     * (tracked for M7 — frontend cleanup — and a corresponding backend audit).
+     */
     companyName: { type: String, trim: true },
+    /**
+     * Link to the Company entity that owns this user's business identity.
+     * Null for admin accounts (which have no Company) and, transiently, for
+     * any pre-migration user until M1.2's backfill script runs.
+     */
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      default: null,
+      index: true,
+    },
     role: {
       type: String,
       enum: ['admin', 'exporter', 'buyer', 'shipper'],

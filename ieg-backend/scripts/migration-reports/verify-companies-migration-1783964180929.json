@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-07-13T17:36:20.929Z",
+  "allPassed": true,
+  "checks": [
+    {
+      "name": "Every eligible user has a company (User.companyId is set)",
+      "passed": true,
+      "details": {
+        "unlinkedCount": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "Every User.companyId references an existing Company",
+      "passed": true,
+      "details": {
+        "brokenCount": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "Every Company.ownerUserId references an existing User",
+      "passed": true,
+      "details": {
+        "orphanCount": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "No duplicate companies exist for the same owner",
+      "passed": true,
+      "details": {
+        "duplicateOwnerCount": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "User.companyId and Company.ownerUserId are bidirectionally consistent",
+      "passed": true,
+      "details": {
+        "mismatchCount": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "Total Company count matches expected number of migrated users",
+      "passed": true,
+      "details": {
+        "expectedUserCount": 25,
+        "actualCompanyCount": 25,
+        "difference": 0
+      }
+    }
+  ]
+}

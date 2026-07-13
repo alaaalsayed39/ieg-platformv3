@@ -1,0 +1,187 @@
+{
+  "summary": {
+    "timestamp": "2026-07-13T17:35:53.146Z",
+    "dryRun": false,
+    "totalEligible": 25,
+    "created": 25,
+    "relinkedExisting": 0,
+    "failed": []
+  },
+  "results": [
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe1",
+      "email": "exporter2@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f1ffcc842c9be50650",
+      "verificationStatus": "verified"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe4",
+      "email": "buyer2@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f1ffcc842c9be50656",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe6",
+      "email": "buyer4@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f1ffcc842c9be5065b",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe3",
+      "email": "buyer1@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f2ffcc842c9be50660",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe5",
+      "email": "buyer3@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f2ffcc842c9be50665",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe7",
+      "email": "shipper1@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f2ffcc842c9be5066a",
+      "verificationStatus": "verified"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe0",
+      "email": "exporter1@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f3ffcc842c9be50670",
+      "verificationStatus": "verified"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe2",
+      "email": "exporter3@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f3ffcc842c9be50676",
+      "verificationStatus": "pending"
+    },
+    {
+      "userId": "6a27ebc9f65681d9d05f9fe8",
+      "email": "shipper2@ieg.com",
+      "outcome": "created",
+      "companyId": "6a5521f3ffcc842c9be5067c",
+      "verificationStatus": "pending"
+    },
+    {
+      "userId": "6a2e4b79cb8cdc07581942aa",
+      "email": "shahd.eelu.2020@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f4ffcc842c9be50682",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a2fcc9ffeb9695b51869a7e",
+      "email": "alaa@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f4ffcc842c9be50687",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a3127b0586a6bc96ab61f58",
+      "email": "afffg@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f4ffcc842c9be5068c",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a3127eb586a6bc96ab61f7c",
+      "email": "sfgfd3@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f5ffcc842c9be50691",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312a74586a6bc96ab61fa6",
+      "email": "dfghb@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f5ffcc842c9be50696",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312b19586a6bc96ab61fc6",
+      "email": "test@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f5ffcc842c9be5069b",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312bbf586a6bc96ab61feb",
+      "email": "test123@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f6ffcc842c9be506a0",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312ca2586a6bc96ab62000",
+      "email": "edgvfhb@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f6ffcc842c9be506a5",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312cd0586a6bc96ab62020",
+      "email": "test21@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f6ffcc842c9be506aa",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312d52586a6bc96ab62035",
+      "email": "test53@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f7ffcc842c9be506af",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312d93586a6bc96ab62058",
+      "email": "fgsdgb91@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f7ffcc842c9be506b4",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312e3d586a6bc96ab62078",
+      "email": "ufghkj@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f7ffcc842c9be506b9",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312ee5586a6bc96ab6208d",
+      "email": "fghgh1@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f8ffcc842c9be506be",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a312f34586a6bc96ab620a2",
+      "email": "sgsfh1@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f8ffcc842c9be506c3",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a3422b2586a6bc96ab627be",
+      "email": "heshamelsheme33@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f8ffcc842c9be506c8",
+      "verificationStatus": "draft"
+    },
+    {
+      "userId": "6a4f821f5c8caea3cc414af7",
+      "email": "ammar@gmail.com",
+      "outcome": "created",
+      "companyId": "6a5521f8ffcc842c9be506cd",
+      "verificationStatus": "draft"
+    }
+  ]
+}

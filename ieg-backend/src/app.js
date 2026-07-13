@@ -27,6 +27,7 @@ const logger = require('./utils/logger');
 // Route imports
 const authRoutes         = require('./modules/auth/auth.routes');
 const userRoutes         = require('./modules/users/user.routes');
+const companyRoutes      = require('./modules/companies/company.routes');
 const productRoutes      = require('./modules/products/product.routes');
 const orderRoutes        = require('./modules/orders/order.routes');
 const shipmentRoutes     = require('./modules/shipments/shipment.routes');
@@ -128,6 +129,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const API = '/api/v1';
 app.use(`${API}/auth`,          authRoutes);
 app.use(`${API}/users`,         userRoutes);
+app.use(`${API}/companies`,     companyRoutes);
 app.use(`${API}/products`,      productRoutes);
 app.use(`${API}/orders`,        orderRoutes);
 app.use(`${API}/shipments`,     shipmentRoutes);
