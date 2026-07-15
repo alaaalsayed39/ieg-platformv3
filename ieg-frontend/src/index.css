@@ -52,7 +52,8 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Syne', sans-serif; }
 .ieg-table tr:hover td { background: rgba(255,255,255,0.02); }
 
 /* Inputs */
-.ieg-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; padding: 10px 14px; font-family: 'DM Sans'; width: 100%; outline: none; transition: border 0.2s; }
+
+.ieg-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; padding: 10px 14px 10px 36px; font-family: 'DM Sans'; width: 100%; outline: none; transition: border 0.2s; }
 .ieg-input:focus { border-color: #f5b400; box-shadow: 0 0 0 3px rgba(245,180,0,0.1); }
 .ieg-input::placeholder { color: #4a5568; }
 .ieg-select { background: #0d1b3e; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; border-radius: 8px; padding: 10px 14px; font-family: 'DM Sans'; width: 100%; outline: none; transition: border 0.2s; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23f5b400' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
