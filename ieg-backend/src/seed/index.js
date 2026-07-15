@@ -16,15 +16,16 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 
-const User         = require('../modules/users/user.model');
-const Product      = require('../modules/products/product.model');
-const Order        = require('../modules/orders/order.model');
-const QuoteRequest = require('../modules/orders/quoteRequest.model');
-const Shipment     = require('../modules/shipments/shipment.model');
-const Transaction  = require('../modules/payments/wallet.model');
-const Document     = require('../modules/documents/document.model');
-const Verification = require('../modules/verifications/verification.model');
-const Notification = require('../modules/notifications/notification.model');
+const User             = require('../modules/users/user.model');
+const Product          = require('../modules/products/product.model');
+const Order            = require('../modules/orders/order.model');
+const QuoteRequest     = require('../modules/orders/quoteRequest.model');
+const Shipment         = require('../modules/shipments/shipment.model');
+const ShippingRequest  = require('../modules/shippingRequests/shippingRequest.model');
+const Transaction      = require('../modules/payments/wallet.model');
+const Document         = require('../modules/documents/document.model');
+const Verification     = require('../modules/verifications/verification.model');
+const Notification     = require('../modules/notifications/notification.model');
 const { Conversation, Message } = require('../modules/messages/message.model');
 
 const logger = require('../utils/logger');
@@ -42,6 +43,7 @@ const clearAll = async () => {
     Shipment.deleteMany({}), Transaction.deleteMany({}), Document.deleteMany({}),
     Verification.deleteMany({}), Notification.deleteMany({}),
     Conversation.deleteMany({}), Message.deleteMany({}),
+    ShippingRequest.deleteMany({}),
   ]);
   logger.info('All collections cleared.');
 };
