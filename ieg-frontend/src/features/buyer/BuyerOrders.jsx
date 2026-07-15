@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Truck, Download, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react'
+import { Truck, Download, ChevronDown, ChevronUp } from 'lucide-react'
 import StatusBadge from '../../components/ui/StatusBadge'
 import PageHeader from '../../components/ui/PageHeader'
 import { formatCurrency, formatDate } from '../../utils/format'
 import api from '../../config/api'
-import { useChatStore } from '../../store/chatStore'
 import toast from 'react-hot-toast'
 import Spinner from '../../components/ui/Spinner'
 
@@ -13,7 +12,6 @@ const SHIPPABLE_STATUSES = ['shipped', 'in_transit', 'delivered']
 
 export default function BuyerOrders() {
   const navigate = useNavigate()
-  const { initiateConversation } = useChatStore()
   const [orders, setOrders] = useState([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -21,14 +19,6 @@ export default function BuyerOrders() {
   const [statusF, setStatusF] = useState('')
   const [expanded, setExpanded] = useState(null)
   const [stats, setStats] = useState(null)
-
-  const handleChat = async (exporterId) => {
-    if (!exporterId) return
-    try {
-      await initiateConversation(exporterId)
-      navigate('/buyer/messages')
-    } catch (_) {}
-  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -70,6 +60,22 @@ export default function BuyerOrders() {
     }
   }
 
+  const downloadInvoice = async (orderId, orderNumber) => {
+    try {
+      const response = await api.get(`/orders/${orderId}/invoice`, { responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `Invoice-${orderNumber}.html`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch {
+      toast.error('Failed to download invoice')
+    }
+  }
+
   const trackShipment = (order) => {
     if (!SHIPPABLE_STATUSES.includes(order.status)) {
       toast.error('Shipment tracking is available once the order has been shipped')
@@ -91,7 +97,7 @@ export default function BuyerOrders() {
               { label: 'Total Orders', value: stats.total, color: 'text-white' },
               { label: 'In Transit', value: stats.shipped, color: 'text-blue-400' },
               { label: 'Delivered', value: stats.delivered, color: 'text-emerald-400' },
-              { label: 'Pending', value: stats.processing, color: 'text-amber-400' },
+              { label: 'Pending', value: stats.pending, color: 'text-amber-400' },
             ].map((s) => (
               <div key={s.label}>
                 <p className={`font-display font-bold text-2xl ${s.color}`}>{s.value ?? 0}</p>
@@ -150,7 +156,7 @@ export default function BuyerOrders() {
                   <td className="text-xs text-slate-300 max-w-[140px] truncate">{o.productName}</td>
                   <td className="text-xs">{o.quantity} {o.unit}</td>
                   <td><span className="font-bold text-gold-500 text-sm">{formatCurrency(o.totalValueUsd)}</span></td>
-                  <td className="text-xs text-slate-400">{formatDate(o.eta) || '—'}</td>
+                  <td className="text-xs text-slate-400">{o.eta ? formatDate(o.eta) : '—'}</td>
                   <td><StatusBadge status={o.status} /></td>
                   <td>
                     <div className="flex items-center gap-1.5">
@@ -181,7 +187,11 @@ export default function BuyerOrders() {
                         </button>
                       )}
                       {o.status === 'delivered' && (
-                        <button type="button" className="text-xs bg-white/5 text-slate-400 border border-white/10 px-2 py-1 rounded-lg hover:bg-white/10 transition flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => downloadInvoice(o._id, o.orderNumber)}
+                          className="text-xs bg-white/5 text-slate-400 border border-white/10 px-2 py-1 rounded-lg hover:bg-white/10 transition flex items-center gap-1"
+                        >
                           <Download size={11} /> Invoice
                         </button>
                       )}
@@ -216,22 +226,13 @@ export default function BuyerOrders() {
                             </div>
                           ))}
                         </div>
-                        <div className="flex gap-2 items-center">
-                          {SHIPPABLE_STATUSES.includes(o.status) ? (
-                            <button type="button" onClick={() => trackShipment(o)} className="btn-gold text-xs py-2 px-4 flex items-center gap-2">
-                              <Truck size={14} /> View Live Shipment Tracking
-                            </button>
-                          ) : (
-                            <p className="text-xs text-slate-500 py-2 pr-4">Tracking will be available once your order is shipped.</p>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleChat(o.exporterId?._id || o.exporterId)}
-                            className="bg-white/5 border border-white/10 hover:border-gold-500/30 hover:bg-gold-500/10 text-xs py-2 px-4 flex items-center gap-1.5 rounded-xl transition text-slate-300 hover:text-white"
-                          >
-                            <MessageSquare size={14} /> Chat with Supplier
+                        {SHIPPABLE_STATUSES.includes(o.status) ? (
+                          <button type="button" onClick={() => trackShipment(o)} className="btn-gold text-xs py-2 px-4 flex items-center gap-2">
+                            <Truck size={14} /> View Live Shipment Tracking
                           </button>
-                        </div>
+                        ) : (
+                          <p className="text-xs text-slate-500">Tracking will be available once your order is shipped.</p>
+                        )}
                         <button type="button" onClick={() => setExpanded(null)} className="mt-3 btn-ghost text-xs block">Close Details</button>
                       </div>
                     </td>
