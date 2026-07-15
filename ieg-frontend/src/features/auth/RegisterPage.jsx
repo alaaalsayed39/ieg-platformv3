@@ -23,6 +23,25 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.role) return toast.error('Please select your role')
+
+    // ── Full Name validation ──────────────────────────────────────────────────
+    if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(form.fullName.trim())) {
+      return toast.error('Full Name must contain letters only, no numbers or special characters')
+    }
+
+    // ── Phone validation ──────────────────────────────────────────────────────
+    if (form.phone && form.phone.replace(/\D/g, '').length > 15) {
+      return toast.error('Phone number is too long — maximum 15 digits allowed')
+    }
+
+    // ── Password validation ───────────────────────────────────────────────────
+    if (!/(?=.*[A-Z])/.test(form.password)) {
+      return toast.error('Password must contain at least one uppercase letter')
+    }
+    if (form.password.length < 8) {
+      return toast.error('Password must be at least 8 characters')
+    }
+
     setLoading(true)
     try {
       const { data } = await api.post('/auth/register', form)
@@ -51,7 +70,18 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="ieg-label">Full Name</label>
-                <input className="ieg-input" placeholder="Your name" value={form.fullName} onChange={e => set('fullName', e.target.value)} required />
+                <input
+                  className="ieg-input"
+                  placeholder="Your name"
+                  value={form.fullName}
+                  onChange={e => {
+                    const val = e.target.value
+                    // منع كتابة أرقام مباشرة في الـ input
+                    if (/\d/.test(val)) return
+                    set('fullName', val)
+                  }}
+                  required
+                />
               </div>
               <div>
                 <label className="ieg-label">Company</label>
@@ -69,7 +99,17 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="ieg-label">Phone</label>
-                <input className="ieg-input" placeholder="+20..." value={form.phone} onChange={e => set('phone', e.target.value)} />
+                <input
+                  className="ieg-input"
+                  placeholder="+20..."
+                  value={form.phone}
+                  maxLength={15}
+                  onChange={e => {
+                    const val = e.target.value
+                    if (/[a-zA-Z\u0600-\u06FF]/.test(val)) return
+                    set('phone', val)
+                  }}
+                />
               </div>
             </div>
 
