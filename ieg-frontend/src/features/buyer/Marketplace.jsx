@@ -17,7 +17,7 @@ export default function Marketplace() {
   const [page,       setPage]       = useState(1)
   const [loading,    setLoading]    = useState(true)
   const [query,      setQuery]      = useState('')
-  const [filters,    setFilters]    = useState({ category: '', cert: '', moq: '' })
+  const [filters,    setFilters]    = useState({ categories: [], cert: '', moq: '' })
   const [priceRange, setPriceRange] = useState(5000)
   const [saved,      setSaved]      = useState(new Set())
   const [quoteModal, setQuoteModal] = useState(null)
@@ -31,15 +31,17 @@ export default function Marketplace() {
     setLoading(true)
     try {
       const params = new URLSearchParams({ page, limit: 9 })
-      if (query)            params.append('q', query)
-      if (filters.category) params.append('category', filters.category)
-      if (filters.cert)     params.append('cert', filters.cert)
-      if (filters.moq)      params.append('moq', filters.moq)
+      if (query)                    params.append('q', query)
+      if (filters.categories.length) filters.categories.forEach(c => params.append('category', c))
+      if (filters.cert)             params.append('cert', filters.cert)
+      if (filters.moq)              params.append('moq', filters.moq)
       params.append('maxPrice', priceRange)
       const { data } = await api.get(`/products?${params}`)
-      setProducts(data.data || [])
-      setTotal(data.pagination?.total || 0)
-    } catch { toast.error('Failed to load products') }
+      setProducts(data.data?.data || data.data || [])
+      setTotal(data.data?.total || data.pagination?.total || 0)
+    } catch {
+      toast.error('Failed to load products')
+    }
     finally { setLoading(false) }
   }, [page, query, filters, priceRange])
 
@@ -93,18 +95,28 @@ export default function Marketplace() {
       {/* Search bar */}
       <div className="flex items-center gap-3 mb-6">
         <div className="flex-1 relative">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           <input
-            className="ieg-input pl-12 text-base h-12"
+            className="w-full h-12 pl-12 pr-4 rounded-xl text-sm text-white placeholder-slate-500 outline-none transition"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+            }}
+            onFocus={e => e.target.style.borderColor = '#F5A623'}
+            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
             placeholder="Search Egyptian products... (cotton, dates, olive oil)"
             value={query}
             onChange={e => { setQuery(e.target.value); setPage(1) }}
           />
         </div>
-        <div className="h-12 px-4 flex items-center gap-2 bg-gold-500 text-navy-900 rounded-xl font-bold cursor-pointer hover:bg-gold-600 transition">
+        <button
+          onClick={() => load()}
+          className="h-12 px-5 flex items-center gap-2 rounded-xl font-bold transition"
+          style={{ background: '#F5A623', color: '#0B1437' }}
+        >
           <Search size={18} />
           <span className="hidden md:inline">Search</span>
-        </div>
+        </button>
       </div>
 
       <div className="flex gap-5">
@@ -120,10 +132,18 @@ export default function Marketplace() {
                 <div className="space-y-1.5">
                   {CATEGORIES.map(c => (
                     <label key={c} className="flex items-center gap-2 cursor-pointer group">
-                      <input type="radio" name="cat" value={c} checked={filters.category === c}
-                        onChange={() => { setFilters(f => ({ ...f, category: f.category === c ? '' : c })); setPage(1) }}
+                      <input type="checkbox" checked={filters.categories.includes(c)}
+                        onChange={() => {
+                          setFilters(f => ({
+                            ...f,
+                            categories: f.categories.includes(c)
+                              ? f.categories.filter(x => x !== c)
+                              : [...f.categories, c]
+                          }))
+                          setPage(1)
+                        }}
                         className="accent-gold-500" />
-                      <span className={`text-xs transition ${filters.category === c ? 'text-gold-500 font-semibold' : 'text-slate-400 group-hover:text-white'}`}>{c}</span>
+                      <span className={`text-xs transition ${filters.categories.includes(c) ? 'text-gold-500 font-semibold' : 'text-slate-400 group-hover:text-white'}`}>{c}</span>
                     </label>
                   ))}
                 </div>
@@ -154,7 +174,7 @@ export default function Marketplace() {
                 </div>
               </div>
 
-              <button onClick={() => { setFilters({ category:'',cert:'',moq:'' }); setPriceRange(5000); setQuery(''); setPage(1) }}
+              <button onClick={() => { setFilters({ categories: [], cert: '', moq: '' }); setPriceRange(5000); setQuery(''); setPage(1) }}
                 className="btn-gold w-full text-sm">Clear Filters</button>
             </div>
           </div>
