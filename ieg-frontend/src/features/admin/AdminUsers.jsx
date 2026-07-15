@@ -15,6 +15,7 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true)
   const [search,  setSearch]  = useState('')
   const [roleFilter, setRoleFilter] = useState('')
+  const [stats, setStats] = useState({ exporters: 0, buyers: 0, suspended: 0 })
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -22,9 +23,21 @@ export default function AdminUsers() {
       const params = new URLSearchParams({ page, limit: 10 })
       if (search)     params.append('q', search)
       if (roleFilter) params.append('role', roleFilter)
-      const { data } = await api.get(`/admin/users?${params}`)
-      setUsers(data.data)
-      setTotal(data.pagination.total)
+
+      const [usersRes, exportersRes, buyersRes, suspendedRes] = await Promise.all([
+        api.get(`/admin/users?${params}`),
+        api.get('/admin/users?role=exporter&limit=1'),
+        api.get('/admin/users?role=buyer&limit=1'),
+        api.get('/admin/users?status=inactive&limit=1'),
+      ])
+
+      setUsers(usersRes.data.data)
+      setTotal(usersRes.data.pagination.total)
+      setStats({
+        exporters: exportersRes.data.pagination?.total || 0,
+        buyers:    buyersRes.data.pagination?.total    || 0,
+        suspended: suspendedRes.data.pagination?.total || 0,
+      })
     } catch { toast.error('Failed to load users') }
     finally { setLoading(false) }
   }, [page, search, roleFilter])
@@ -93,10 +106,10 @@ export default function AdminUsers() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Total',     value: total, color: 'text-white' },
-          { label: 'Exporters', value: '—',   color: 'text-gold-500' },
-          { label: 'Buyers',    value: '—',   color: 'text-blue-400' },
-          { label: 'Suspended', value: '—',   color: 'text-red-400' },
+          { label: 'Total',     value: total,           color: 'text-white' },
+          { label: 'Exporters', value: stats.exporters, color: 'text-gold-500' },
+          { label: 'Buyers',    value: stats.buyers,    color: 'text-blue-400' },
+          { label: 'Suspended', value: stats.suspended, color: 'text-red-400' },
         ].map(s => (
           <div key={s.label} className="ieg-card p-4 text-center">
             <p className={`font-display font-bold text-xl ${s.color}`}>{s.value}</p>
