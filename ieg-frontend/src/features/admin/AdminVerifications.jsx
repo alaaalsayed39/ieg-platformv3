@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Check, X, Eye } from 'lucide-react'
+import { Check, X, Eye, ExternalLink } from 'lucide-react'
 import StatusBadge from '../../components/ui/StatusBadge'
 import PageHeader  from '../../components/ui/PageHeader'
 import Modal       from '../../components/ui/Modal'
 import { formatDate } from '../../utils/format'
-import api from '../../config/api'
+import api, { getAssetUrl } from '../../config/api'
 import toast from 'react-hot-toast'
 import Spinner from '../../components/ui/Spinner'
 
@@ -70,10 +70,22 @@ export default function AdminVerifications() {
                 </td>
                 <td><span className="font-mono text-xs text-slate-300">{v.taxId || '—'}</span></td>
                 <td>
-                  <div className="text-xs text-slate-400 space-y-0.5">
-                    {v.tradeLicenseUrl && <p className="text-emerald-400">✓ Trade License</p>}
-                    {v.businessRegUrl  && <p className="text-emerald-400">✓ Business Reg.</p>}
-                    {!v.tradeLicenseUrl && !v.businessRegUrl && <p className="text-slate-600">No docs</p>}
+                  <div className="text-xs space-y-1">
+                    {v.tradeLicenseUrl ? (
+                      <a href={getAssetUrl(v.tradeLicenseUrl)} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition">
+                        <ExternalLink size={11} /> Trade License
+                      </a>
+                    ) : null}
+                    {v.businessRegUrl ? (
+                      <a href={getAssetUrl(v.businessRegUrl)} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition">
+                        <ExternalLink size={11} /> Business Reg.
+                      </a>
+                    ) : null}
+                    {!v.tradeLicenseUrl && !v.businessRegUrl && (
+                      <p className="text-slate-600">No docs</p>
+                    )}
                   </div>
                 </td>
                 <td className="text-xs text-slate-500">{formatDate(v.submittedAt)}</td>
@@ -86,6 +98,10 @@ export default function AdminVerifications() {
                     </button>
                     {v.status === 'pending' && (
                       <>
+                        <button onClick={() => { setSelected(v); setNote(''); setTimeout(() => review('under_review'), 0) }}
+                          className="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-400 flex items-center justify-center hover:bg-blue-500/25 transition" title="Under Review">
+                          <Eye size={13} />
+                        </button>
                         <button onClick={() => { setSelected(v); review('approved') }}
                           className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/25 transition" title="Approve">
                           <Check size={13} />
@@ -124,6 +140,29 @@ export default function AdminVerifications() {
                 </div>
               ))}
             </div>
+
+            {/* Document links in modal */}
+            <div>
+              <p className="ieg-label mb-2">Documents</p>
+              <div className="space-y-2">
+                {selected.tradeLicenseUrl && (
+                  <a href={getAssetUrl(selected.tradeLicenseUrl)} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition text-sm">
+                    <ExternalLink size={13} /> Trade License
+                  </a>
+                )}
+                {selected.businessRegUrl && (
+                  <a href={getAssetUrl(selected.businessRegUrl)} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition text-sm">
+                    <ExternalLink size={13} /> Business Registration
+                  </a>
+                )}
+                {!selected.tradeLicenseUrl && !selected.businessRegUrl && (
+                  <p className="text-slate-500 text-sm">No documents uploaded</p>
+                )}
+              </div>
+            </div>
+
             <div>
               <label className="ieg-label">Review Notes</label>
               <textarea className="ieg-input min-h-[80px] resize-none" placeholder="Add notes for the applicant..."
@@ -133,6 +172,7 @@ export default function AdminVerifications() {
               <button onClick={() => setSelected(null)} className="btn-ghost flex-1">Cancel</button>
               {selected.status === 'pending' && (
                 <>
+                  <button onClick={() => review('under_review')} className="btn-ghost flex-1">Under Review</button>
                   <button onClick={() => review('rejected')} className="btn-danger flex-1">Reject</button>
                   <button onClick={() => review('approved')} className="btn-gold flex-1">Approve</button>
                 </>
