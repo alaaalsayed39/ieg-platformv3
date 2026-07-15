@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Truck, Package, CheckCircle, AlertTriangle, Plus } from 'lucide-react'
 import StatCard from '../../components/ui/StatCard'
 import { useAuthStore } from '../../store/authStore'
@@ -11,6 +11,7 @@ export default function ShipperDashboard() {
   const [shipments, setShipments] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     Promise.all([
@@ -52,7 +53,11 @@ export default function ShipperDashboard() {
         </div>
         <div className="space-y-2">
           {shipments.slice(0, 5).map((s) => (
-            <div key={s._id} className="flex items-center justify-between p-3 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 transition">
+            <div
+              key={s._id}
+              onClick={() => navigate(`/shipper/tracking?shipment=${s._id}`)}
+              className="flex items-center justify-between p-3 rounded-xl bg-white/3 border border-white/5 hover:border-gold-500/30 hover:bg-white/5 transition cursor-pointer"
+            >
               <div>
                 <p className="font-mono text-sm text-gold-500">{s.containerNumber}</p>
                 <p className="text-xs text-slate-500">{s.originPort} → {s.destinationPort}</p>
