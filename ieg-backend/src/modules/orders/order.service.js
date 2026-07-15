@@ -18,14 +18,10 @@ const _roleFilter = (user) => {
 
 // ─── Create Order (Buyer) ──────────────────────────────────────────────────────
 const createOrder = async (buyerId, { productId, quantity, deliveryMethod, shipmentMode, insurance, comments }) => {
-  // Validate product exists and is published before attempting atomic deduction
   const product = await Product.findById(productId).populate('exporterId', 'fullName email');
   if (!product) throw ApiError.notFound('Product not found');
   if (product.status !== 'published') throw ApiError.badRequest('Product is not available');
 
-  // ── Atomic inventory deduction ─────────────────────────────────────────────
-  // The filter `inventory.quantity: { $gte: quantity }` ensures we only decrement
-  // when sufficient stock exists — this prevents overselling under concurrent load.
   const updatedProduct = await Product.findOneAndUpdate(
     {
       _id: productId,
@@ -37,7 +33,6 @@ const createOrder = async (buyerId, { productId, quantity, deliveryMethod, shipm
   );
 
   if (!updatedProduct) {
-    // Re-fetch to give a precise error message
     const current = await Product.findById(productId).select('inventory.quantity status');
     if (!current || current.status !== 'published') {
       throw ApiError.badRequest('Product is no longer available');
@@ -46,7 +41,6 @@ const createOrder = async (buyerId, { productId, quantity, deliveryMethod, shipm
       `Insufficient inventory. Only ${current.inventory.quantity} unit(s) available.`,
     );
   }
-  // ──────────────────────────────────────────────────────────────────────────
 
   const totalValueUsd = product.pricing.pricePerUnit * quantity;
   const orderNumber   = generateOrderNumber();
@@ -67,9 +61,6 @@ const createOrder = async (buyerId, { productId, quantity, deliveryMethod, shipm
     timeline: [{ status: 'pending', note: 'Order placed by buyer' }],
   });
 
-  // Inventory was already atomically decremented above — no second write needed.
-
-  // Notify exporter
   const { subject, html } = emailTemplates.newOrder(product.exporterId.fullName, orderNumber);
   sendEmail({ to: product.exporterId.email, subject, html });
 
@@ -114,8 +105,8 @@ const getOrder = async (user, orderId) => {
 // ─── Update Order Status ───────────────────────────────────────────────────────
 const updateStatus = async (user, orderId, status, note) => {
   const validTransitions = {
-    admin:    ['pending','processing','shipped','in_transit','delivered','cancelled'],
-    exporter: ['processing', 'shipped', 'cancelled'],
+    admin:    ['pending', 'processing', 'shipped', 'in_transit', 'delivered', 'cancelled'],
+    exporter: ['processing', 'shipped', 'in_transit', 'cancelled'],  // ✅ in_transit أضيفت
     shipper:  ['shipped', 'in_transit', 'delivered'],
     buyer:    ['cancelled'],
   };
@@ -157,20 +148,17 @@ const updateStatus = async (user, orderId, status, note) => {
   if (status === 'cancelled') {
     const paymentService = require('../payments/payment.service');
 
-    // ── Restore inventory atomically ──────────────────────────────────────────
     if (order.productId && order.quantity) {
       await Product.findByIdAndUpdate(
         order.productId,
         { $inc: { 'inventory.quantity': order.quantity } },
-      ).catch(() => {}); // non-fatal; log only
+      ).catch(() => {});
     }
 
-    // ── Refund escrow if funds were held ─────────────────────────────────────
     if (order.paymentStatus === 'held') {
       await paymentService.refundEscrow(orderId, note || 'Order cancelled');
     }
 
-    // ── Notify exporter that an order was cancelled ───────────────────────────
     const Notification = require('../notifications/notification.model');
     await Notification.create({
       userId: order.exporterId,
@@ -186,7 +174,6 @@ const updateStatus = async (user, orderId, status, note) => {
     emitOrderUpdate(order);
   } catch (_) { /* socket optional */ }
 
-  // Notify relevant parties
   const emailUser = user.role === 'exporter' ? order.buyerId : order.exporterId;
   const { subject, html } = emailTemplates.orderStatusUpdate(emailUser.fullName, order.orderNumber, status);
   sendEmail({ to: emailUser.email, subject, html });
@@ -315,7 +302,6 @@ const _createOrderFromQuote = async (quote) => {
   if (!product) throw ApiError.notFound('Product not found');
   if (product.status !== 'published') throw ApiError.badRequest('Product is not available for ordering');
 
-  // ── Atomic inventory deduction (prevents overselling from concurrent quotes) ──
   const updatedProduct = await Product.findOneAndUpdate(
     {
       _id: quote.productId,
@@ -332,7 +318,6 @@ const _createOrderFromQuote = async (quote) => {
       `Insufficient inventory. Only ${current?.inventory?.quantity ?? 0} unit(s) available.`,
     );
   }
-  // ──────────────────────────────────────────────────────────────────────────
 
   const orderNumber = generateOrderNumber();
   const order = await Order.create({
@@ -351,7 +336,6 @@ const _createOrderFromQuote = async (quote) => {
     timeline: [{ status: 'pending', note: 'Order created from accepted quote' }],
   });
 
-  // Inventory already decremented atomically above.
   return order;
 };
 
