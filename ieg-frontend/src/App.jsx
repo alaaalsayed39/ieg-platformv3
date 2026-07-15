@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAuthStore } from "./store/authStore";
 import api, { API_BASE } from "./config/api";
@@ -26,8 +26,6 @@ import AdminVerifications from "./features/admin/AdminVerifications";
 import AdminDocumentReviews from "./features/admin/AdminDocumentReviews";
 import AdminReports from "./features/admin/AdminReports";
 import AdminSettings from "./features/admin/AdminSettings";
-import AdminChatModeration from "./features/admin/AdminChatModeration";
-import ChatPage from "./components/chat/ChatPage";
 
 import ExporterDashboard from "./features/exporter/ExporterDashboard";
 import ExporterProducts from "./features/exporter/ExporterProducts";
@@ -51,8 +49,13 @@ import ShipmentTracking from "./features/shipper/ShipmentTracking";
 import ShipperReports from "./features/shipper/ShipperReports";
 import ShipperSettings from "./features/shipper/ShipperSettings";
 
+import HelpPage from "./features/shared/HelpPage";
+import useIdleTimeout from "./hooks/useIdleTimeout";
+
 export default function App() {
   const { setAuth, setLoading } = useAuthStore();
+
+  useIdleTimeout();
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -98,7 +101,6 @@ export default function App() {
         <Route path="verifications" element={<AdminVerifications />} />
         <Route path="document-reviews" element={<AdminDocumentReviews />} />
         <Route path="reports" element={<AdminReports />} />
-        <Route path="chat" element={<AdminChatModeration />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
 
@@ -113,7 +115,7 @@ export default function App() {
         <Route path="documents" element={<ExporterDocuments />} />
         <Route path="wallet" element={<ExporterWallet />} />
         <Route path="shipments" element={<ShipmentTracking />} />
-        <Route path="messages" element={<ChatPage />} />
+        <Route path="help" element={<HelpPage />} />
       </Route>
 
       <Route path="/buyer" element={<PrivateRoute roles={["buyer"]}><DashboardLayout /></PrivateRoute>}>
@@ -122,8 +124,8 @@ export default function App() {
         <Route path="marketplace/:id" element={<ProductDetailsPage />} />
         <Route path="orders" element={<BuyerOrders />} />
         <Route path="orders/:orderId/shipment" element={<BuyerShipmentDetail />} />
-        <Route path="messages" element={<ChatPage />} />
         <Route path="settings" element={<BuyerSettings />} />
+        <Route path="help" element={<HelpPage />} />
       </Route>
 
       <Route path="/shipper" element={<PrivateRoute roles={["shipper"]}><DashboardLayout /></PrivateRoute>}>
