@@ -31,6 +31,7 @@ const notificationRoutes    = require('./modules/notifications/notification.rout
 const verificationRoutes    = require('./modules/verifications/verification.routes');
 const publicRoutes          = require('./modules/public/public.routes');
 const supportRoutes         = require('./modules/support/support.routes');
+const governmentRoutes      = require('./modules/government/government.routes');
 
 const app = express();
 
@@ -78,7 +79,7 @@ app.get('/health', async (req, res) => {
       for (const c of names) {
         collections[c.name] = await mongoose.connection.db.collection(c.name).countDocuments();
       }
-    } catch (_) { /* ignore during startup */ }
+    } catch (_) {}
   }
   res.json({
     success: true,
@@ -112,6 +113,7 @@ app.use(`${API}/notifications`,     notificationRoutes);
 app.use(`${API}/verifications`,     verificationRoutes);
 app.use(`${API}/public`,            publicRoutes);
 app.use(`${API}/support`,           supportRoutes);
+app.use(`${API}/government`,        governmentRoutes);
 
 // ── 404 Handler ────────────────────────────────────────────────────────────────
 app.use('*', (req, res) => {
