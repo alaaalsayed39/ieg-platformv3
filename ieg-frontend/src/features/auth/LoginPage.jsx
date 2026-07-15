@@ -24,6 +24,12 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.email || !form.password) return toast.error('Please fill all fields')
+
+    // ── Password minimum length validation ────────────────────────────────────
+    if (form.password.length < 8) {
+      return toast.error('Password must be at least 8 characters')
+    }
+
     setLoading(true)
     try {
       const { data } = await api.post('/auth/login', { email: form.email, password: form.password })
@@ -47,7 +53,6 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-5/12 flex-col justify-between p-10 relative overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #0B1437 0%, #060d24 100%)' }}>
         <div className="absolute inset-0 navy-mesh opacity-60" />
-        {/* Background ship illustration */}
         <div className="absolute bottom-0 left-0 right-0 h-64 opacity-10">
           <svg viewBox="0 0 400 200" className="w-full h-full">
             <rect x="50" y="120" width="300" height="60" rx="8" fill="#F5A623"/>
