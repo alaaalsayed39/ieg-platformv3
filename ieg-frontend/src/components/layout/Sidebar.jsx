@@ -8,8 +8,9 @@ import {
   LayoutDashboard, Package, ShoppingCart, FileText, Truck,
   Wallet, Users, BarChart3, Settings,
   LogOut, ChevronLeft, ShieldCheck, Globe, Star,
-  TrendingUp, Bell, Boxes, HelpCircle,
+  TrendingUp, Bell, Boxes, HelpCircle, Shield,
 } from 'lucide-react'
+
 
 const navConfig = {
   admin: [
@@ -19,6 +20,7 @@ const navConfig = {
     { label: 'Document Review', icon: FileText,        to: '/admin/document-reviews' },
     { label: 'Reports',         icon: BarChart3,       to: '/admin/reports' },
     { label: 'Settings',        icon: Settings,        to: '/admin/settings' },
+    { label: 'Government Requests', icon: Shield, to: '/admin/government' },
   ],
   exporter: [
     { label: 'Dashboard',         icon: LayoutDashboard, to: '/exporter' },
@@ -29,7 +31,9 @@ const navConfig = {
     { label: 'Documents',         icon: FileText,        to: '/exporter/documents' },
     { label: 'Track Shipments',   icon: Boxes,           to: '/exporter/shipments' },
     { label: 'Wallet',            icon: Wallet,          to: '/exporter/wallet' },
+    { label: 'Government Services', icon: Shield, to: '/exporter/government' },
     { label: 'Help & Support',    icon: HelpCircle,      to: '/exporter/help' },
+
   ],
   buyer: [
     { label: 'Dashboard',      icon: LayoutDashboard, to: '/buyer' },
